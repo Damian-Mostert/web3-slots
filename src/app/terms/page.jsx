@@ -4,7 +4,7 @@ import Box from "@/components/box";
 
 export default function Home() {
   return (
-    <Box title="Terms and Condition">
+    <Box title="Terms and Conditions">
         <p>Welcome to our Web3 slot machine! By accessing or using this platform, you agree to the following terms and conditions. If you do not agree, please do not use this service.</p>
 
         <p><strong>1. Eligibility</strong></p>
