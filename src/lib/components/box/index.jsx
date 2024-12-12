@@ -257,7 +257,9 @@ export default function Box({children,title}) {
             {title ? <h2 className="text-[2rem]">{title}</h2>:<></>}
             <Link className="ml-auto w-min" href={"/"}>BACK</Link>
             </div>
-          {children}
+            <div className="w-full h-full overflow-auto flex flex-col gap-4">
+            {children}
+            </div>
           </div> : <>
           <div className={styles.slots} ref={(el) => (slotsRef.current = el)}>
             {[0, 1, 2].map((_, i) => (
@@ -339,7 +341,7 @@ export default function Box({children,title}) {
           {!address && <Connect />}
           <div className="w-full flex gap-4 px-4 pb-4 justify-end">
           <Link href={"/rules"} className="bold mr-auto">Rules</Link>
-            <Link href={"/policy"} className="bold">Policy</Link>
+            <Link href={"/policy"} className="bold">Privacy Policy</Link>
             <Link href={"/terms"} className="bold">Terms and conditions</Link>
           </div>
           </>}
