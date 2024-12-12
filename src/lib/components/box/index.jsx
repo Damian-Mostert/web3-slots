@@ -242,6 +242,8 @@ export default function Box({children,title}) {
     <Image alt={"ETH"} width={60} height={60} className="w-8 h-8 pl-4" src={"/logos/ethereum.svg"} />
   </>
 
+  const disabled = gettingSpinData||isSpinning||busyWithWithdraw
+
   
 
   return (
@@ -295,7 +297,7 @@ export default function Box({children,title}) {
                 "--border":"#134714",
                 "--background":"#2fb531",
                 "--darkside":"#134714"
-            }} className="relative -mt-4" onClick={()=>realSpin()} disabled={isSpinning||gettingSpinData||busyWithWithdraw}>
+            }} className="relative -mt-4" onClick={()=>realSpin()} disabled={disabled}>
               <Image
                 alt={"ETH"}
                 width={60}
@@ -318,7 +320,7 @@ export default function Box({children,title}) {
                 "--border":"#2c3166",
                 "--background":"#5761c9",
                 "--darkside":"#2c3166"
-            }} className="relative" onClick={handleWithdraw} disabled={gettingSpinData||isSpinning||busyWithWithdraw}>
+            }} className="relative" onClick={handleWithdraw} disabled={disabled}>
               <Image
                 alt={"ETH"}
                 width={60}
@@ -330,7 +332,7 @@ export default function Box({children,title}) {
               withdraw
             </button>
              {/*@ts-ignore*/}
-            <button onClick={disconnect}>
+            <button onClick={disabled ? undefined : disconnect} disabled={disabled}>
               <span className="px-8">
                 Disconnect {address.slice(0, 5)}...{address.slice(address.length - 5, address.length)}
               </span>

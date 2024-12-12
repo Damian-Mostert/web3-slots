@@ -8,10 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "ganache": "ganache-cli > ganache.temp.log 2>&1",
-    "compile:ganache": "env-cmd -f .env.ganache hardhat compile --network ganache",
-    "deploy:ganache": "env-cmd -f .env.ganache hardhat run scripts/js/deploy.js --network ganache",
-    "deploy:testnet": "env-cmd -f .env.testnet hardhat run scripts/js/deploy.js --network testnet",
-    "deploy:mainnet": "env-cmd -f .env.mainnet hardhat run scripts/js/deploy.js --network mainnet"
+    "compile:ganache": "rm src/lib/data/artifacts && env-cmd -f .env.ganache hardhat compile --network ganache",
+    "deploy:ganache": "rm src/lib/data/artifacts && env-cmd -f .env.ganache hardhat run scripts/js/deploy.js --network ganache",
+    "deploy:testnet": "rm src/lib/data/artifacts && env-cmd -f .env.testnet hardhat run scripts/js/deploy.js --network testnet",
+    "deploy:mainnet": "rm src/lib/data/artifacts && env-cmd -f .env.mainnet hardhat run scripts/js/deploy.js --network mainnet"
   },
   "dependencies": {
     "@web3modal/wagmi": "^5.1.11",

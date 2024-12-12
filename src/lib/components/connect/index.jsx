@@ -7,7 +7,7 @@ const icons = {
     Coinbase:"/logos/coinbase.png"
 }
 
-export default function(){
+export default function({disableButton}){
     const { connectors, connect } = useConnect();
     return <div className="w-full flex -mt-12">
         <div className={`p-4 rounded-2xl w-full ${styles.box}`} >
