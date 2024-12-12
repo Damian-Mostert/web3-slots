@@ -1,0 +1,44 @@
+{
+  "name": "gamling-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "ganache": "ganache-cli > ganache.temp.log 2>&1",
+    "compile:ganache": "env-cmd -f .env.ganache hardhat compile --network ganache",
+    "deploy:ganache": "env-cmd -f .env.ganache hardhat run scripts/js/deploy.js --network ganache",
+    "deploy:testnet": "env-cmd -f .env.testnet hardhat run scripts/js/deploy.js --network testnet",
+    "deploy:mainnet": "env-cmd -f .env.mainnet hardhat run scripts/js/deploy.js --network mainnet"
+  },
+  "dependencies": {
+    "@web3modal/wagmi": "^5.1.11",
+    "env-cmd": "^10.1.0",
+    "next": "14.1.4",
+    "react": "^18",
+    "react-confetti": "^6.1.0",
+    "react-dom": "^18",
+    "react-use": "^17.6.0",
+    "sass": "^1.82.0",
+    "viem": "^2.21.54",
+    "wagmi": "^2.13.5"
+  },
+  "devDependencies": {
+    "@chainlink/contracts": "^0.4.0",
+    "@openzeppelin/contracts": "^4.4.2",
+    "@openzeppelin/contracts-upgradeable": "^4.4.2",
+    "@openzeppelin/hardhat-upgrades": "^2.5.0",
+    "@truffle/hdwallet-provider": "^2.0.3",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.4",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5"
+  }
+}

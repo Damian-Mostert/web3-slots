@@ -1,0 +1,1336 @@
+{
+  "version": "3.4",
+  "log": [
+    {
+      "@openzeppelin/contracts/access/Ownable.sol:Ownable": {
+        "src": "@openzeppelin/contracts/access/Ownable.sol:20",
+        "inherit": [
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "owner()",
+          "renounceOwnership()",
+          "transferOwnership(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "Ownable",
+            "src": "@openzeppelin/contracts/access/Ownable.sol:28"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      },
+      "@openzeppelin/contracts/utils/Context.sol:Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.2",
+          "flat": false,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      },
+      "scripts/contracts/SlotMachine.sol:SlotMachine": {
+        "src": "scripts/contracts/SlotMachine.sol:6",
+        "version": {
+          "withMetadata": "9223c9eb743f983c587b106aa7048d39f98b93c7f60ead03b6ff1801bde59753",
+          "withoutMetadata": "48aa292b5a3bc951656ea248ee7c2b0465d55ed9713e2d6200f9248ff09210ca",
+          "linkedWithoutMetadata": "48aa292b5a3bc951656ea248ee7c2b0465d55ed9713e2d6200f9248ff09210ca"
+        },
+        "inherit": [
+          "@openzeppelin/contracts/access/Ownable.sol:Ownable",
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "updatePrice(uint256)",
+          "updatePoints(string,uint256,uint256)",
+          "withdraw(uint256)",
+          "deposit()",
+          "()",
+          "spin()",
+          "userBalance()",
+          "cashOut()"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "SlotMachine",
+            "src": "scripts/contracts/SlotMachine.sol:25"
+          },
+          {
+            "kind": "state-variable-assignment",
+            "name": "symbols",
+            "src": "scripts/contracts/SlotMachine.sol:37"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            },
+            {
+              "label": "price",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_uint256",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:23"
+            },
+            {
+              "label": "symbols",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_array(t_string_storage)dyn_storage",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:37"
+            },
+            {
+              "label": "points",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_string_memory_ptr,t_array(t_uint256)2_storage)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:48"
+            },
+            {
+              "label": "slots",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_address,t_struct(Slot)318_storage)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:56"
+            },
+            {
+              "label": "balances",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:57"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_array(t_string_storage)3_storage": {
+              "label": "string[3]",
+              "numberOfBytes": "96"
+            },
+            "t_array(t_string_storage)dyn_storage": {
+              "label": "string[]",
+              "numberOfBytes": "32"
+            },
+            "t_array(t_uint256)2_storage": {
+              "label": "uint256[2]",
+              "numberOfBytes": "64"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_mapping(t_address,t_struct(Slot)318_storage)": {
+              "label": "mapping(address => struct SlotMachine.Slot)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_string_memory_ptr,t_array(t_uint256)2_storage)": {
+              "label": "mapping(string => uint256[2])",
+              "numberOfBytes": "32"
+            },
+            "t_string_memory_ptr": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_string_storage": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_struct(Slot)318_storage": {
+              "label": "struct SlotMachine.Slot",
+              "members": [
+                {
+                  "label": "redeemed",
+                  "type": "t_bool",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "results",
+                  "type": "t_array(t_string_storage)3_storage",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "prize",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "4"
+                }
+              ],
+              "numberOfBytes": "160"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      }
+    },
+    {
+      "@openzeppelin/contracts/access/Ownable.sol:Ownable": {
+        "src": "@openzeppelin/contracts/access/Ownable.sol:20",
+        "inherit": [
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "owner()",
+          "renounceOwnership()",
+          "transferOwnership(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "Ownable",
+            "src": "@openzeppelin/contracts/access/Ownable.sol:28"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      },
+      "@openzeppelin/contracts/utils/Context.sol:Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.2",
+          "flat": false,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      },
+      "scripts/contracts/SlotMachine.sol:SlotMachine": {
+        "src": "scripts/contracts/SlotMachine.sol:6",
+        "version": {
+          "withMetadata": "9223c9eb743f983c587b106aa7048d39f98b93c7f60ead03b6ff1801bde59753",
+          "withoutMetadata": "48aa292b5a3bc951656ea248ee7c2b0465d55ed9713e2d6200f9248ff09210ca",
+          "linkedWithoutMetadata": "48aa292b5a3bc951656ea248ee7c2b0465d55ed9713e2d6200f9248ff09210ca"
+        },
+        "inherit": [
+          "@openzeppelin/contracts/access/Ownable.sol:Ownable",
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "updatePrice(uint256)",
+          "updatePoints(string,uint256,uint256)",
+          "withdraw(uint256)",
+          "deposit()",
+          "()",
+          "spin()",
+          "userBalance()",
+          "cashOut()"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "SlotMachine",
+            "src": "scripts/contracts/SlotMachine.sol:25"
+          },
+          {
+            "kind": "state-variable-assignment",
+            "name": "symbols",
+            "src": "scripts/contracts/SlotMachine.sol:37"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            },
+            {
+              "label": "price",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_uint256",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:23"
+            },
+            {
+              "label": "symbols",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_array(t_string_storage)dyn_storage",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:37"
+            },
+            {
+              "label": "points",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_string_memory_ptr,t_array(t_uint256)2_storage)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:48"
+            },
+            {
+              "label": "slots",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_address,t_struct(Slot)318_storage)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:56"
+            },
+            {
+              "label": "balances",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:57"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_array(t_string_storage)3_storage": {
+              "label": "string[3]",
+              "numberOfBytes": "96"
+            },
+            "t_array(t_string_storage)dyn_storage": {
+              "label": "string[]",
+              "numberOfBytes": "32"
+            },
+            "t_array(t_uint256)2_storage": {
+              "label": "uint256[2]",
+              "numberOfBytes": "64"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_mapping(t_address,t_struct(Slot)318_storage)": {
+              "label": "mapping(address => struct SlotMachine.Slot)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_string_memory_ptr,t_array(t_uint256)2_storage)": {
+              "label": "mapping(string => uint256[2])",
+              "numberOfBytes": "32"
+            },
+            "t_string_memory_ptr": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_string_storage": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_struct(Slot)318_storage": {
+              "label": "struct SlotMachine.Slot",
+              "members": [
+                {
+                  "label": "redeemed",
+                  "type": "t_bool",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "results",
+                  "type": "t_array(t_string_storage)3_storage",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "prize",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "4"
+                }
+              ],
+              "numberOfBytes": "160"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      }
+    },
+    {
+      "@openzeppelin/contracts/access/Ownable.sol:Ownable": {
+        "src": "@openzeppelin/contracts/access/Ownable.sol:20",
+        "inherit": [
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "owner()",
+          "renounceOwnership()",
+          "transferOwnership(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "Ownable",
+            "src": "@openzeppelin/contracts/access/Ownable.sol:28"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      },
+      "@openzeppelin/contracts/utils/Context.sol:Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.2",
+          "flat": false,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      },
+      "scripts/contracts/SlotMachine.sol:SlotMachine": {
+        "src": "scripts/contracts/SlotMachine.sol:6",
+        "version": {
+          "withMetadata": "cec35d86f7d3f81179abb4fc4b226d5ca710000c28fbc5d572c06981e17b7270",
+          "withoutMetadata": "7e2f928eb8bc49ff4a568d021a6c0859ed92440538acbaa78b280672acf407a3",
+          "linkedWithoutMetadata": "7e2f928eb8bc49ff4a568d021a6c0859ed92440538acbaa78b280672acf407a3"
+        },
+        "inherit": [
+          "@openzeppelin/contracts/access/Ownable.sol:Ownable",
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "updatePrice(uint256)",
+          "updatePoints(string,uint256,uint256)",
+          "withdraw(uint256)",
+          "deposit()",
+          "()",
+          "spin()",
+          "userBalance()",
+          "cashOut()"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "SlotMachine",
+            "src": "scripts/contracts/SlotMachine.sol:25"
+          },
+          {
+            "kind": "state-variable-assignment",
+            "name": "symbols",
+            "src": "scripts/contracts/SlotMachine.sol:37"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            },
+            {
+              "label": "price",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_uint256",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:23"
+            },
+            {
+              "label": "symbols",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_array(t_string_storage)dyn_storage",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:37"
+            },
+            {
+              "label": "points",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_string_memory_ptr,t_array(t_uint256)2_storage)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:48"
+            },
+            {
+              "label": "slots",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_address,t_struct(Slot)318_storage)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:56"
+            },
+            {
+              "label": "balances",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:57"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_array(t_string_storage)3_storage": {
+              "label": "string[3]",
+              "numberOfBytes": "96"
+            },
+            "t_array(t_string_storage)dyn_storage": {
+              "label": "string[]",
+              "numberOfBytes": "32"
+            },
+            "t_array(t_uint256)2_storage": {
+              "label": "uint256[2]",
+              "numberOfBytes": "64"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_mapping(t_address,t_struct(Slot)318_storage)": {
+              "label": "mapping(address => struct SlotMachine.Slot)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_string_memory_ptr,t_array(t_uint256)2_storage)": {
+              "label": "mapping(string => uint256[2])",
+              "numberOfBytes": "32"
+            },
+            "t_string_memory_ptr": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_string_storage": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_struct(Slot)318_storage": {
+              "label": "struct SlotMachine.Slot",
+              "members": [
+                {
+                  "label": "redeemed",
+                  "type": "t_bool",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "results",
+                  "type": "t_array(t_string_storage)3_storage",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "prize",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "4"
+                }
+              ],
+              "numberOfBytes": "160"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      }
+    },
+    {
+      "@openzeppelin/contracts/access/Ownable.sol:Ownable": {
+        "src": "@openzeppelin/contracts/access/Ownable.sol:20",
+        "inherit": [
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "owner()",
+          "renounceOwnership()",
+          "transferOwnership(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "Ownable",
+            "src": "@openzeppelin/contracts/access/Ownable.sol:28"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      },
+      "@openzeppelin/contracts/utils/Context.sol:Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.2",
+          "flat": false,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      },
+      "scripts/contracts/SlotMachine.sol:SlotMachine": {
+        "src": "scripts/contracts/SlotMachine.sol:6",
+        "version": {
+          "withMetadata": "d75c047b403eae03e8b1d80f3e1c9953479c6918012f4149d42123fd63b74bab",
+          "withoutMetadata": "5301d63847658a47aadb17e12ad9ee9f643d7e6c1d7528b4b7a2123a1e298cc1",
+          "linkedWithoutMetadata": "5301d63847658a47aadb17e12ad9ee9f643d7e6c1d7528b4b7a2123a1e298cc1"
+        },
+        "inherit": [
+          "@openzeppelin/contracts/access/Ownable.sol:Ownable",
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "updatePrice(uint256)",
+          "updatePoints(string,uint256,uint256)",
+          "withdraw(uint256)",
+          "deposit()",
+          "()",
+          "spin()",
+          "userBalance()",
+          "cashOut()"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "SlotMachine",
+            "src": "scripts/contracts/SlotMachine.sol:25"
+          },
+          {
+            "kind": "state-variable-assignment",
+            "name": "symbols",
+            "src": "scripts/contracts/SlotMachine.sol:37"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            },
+            {
+              "label": "price",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_uint256",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:23"
+            },
+            {
+              "label": "symbols",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_array(t_string_storage)dyn_storage",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:37"
+            },
+            {
+              "label": "points",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_string_memory_ptr,t_array(t_uint256)2_storage)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:48"
+            },
+            {
+              "label": "slots",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_address,t_struct(Slot)318_storage)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:56"
+            },
+            {
+              "label": "balances",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:57"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_array(t_string_storage)3_storage": {
+              "label": "string[3]",
+              "numberOfBytes": "96"
+            },
+            "t_array(t_string_storage)dyn_storage": {
+              "label": "string[]",
+              "numberOfBytes": "32"
+            },
+            "t_array(t_uint256)2_storage": {
+              "label": "uint256[2]",
+              "numberOfBytes": "64"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_mapping(t_address,t_struct(Slot)318_storage)": {
+              "label": "mapping(address => struct SlotMachine.Slot)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_string_memory_ptr,t_array(t_uint256)2_storage)": {
+              "label": "mapping(string => uint256[2])",
+              "numberOfBytes": "32"
+            },
+            "t_string_memory_ptr": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_string_storage": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_struct(Slot)318_storage": {
+              "label": "struct SlotMachine.Slot",
+              "members": [
+                {
+                  "label": "redeemed",
+                  "type": "t_bool",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "results",
+                  "type": "t_array(t_string_storage)3_storage",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "prize",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "4"
+                }
+              ],
+              "numberOfBytes": "160"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      }
+    },
+    {
+      "@openzeppelin/contracts/access/Ownable.sol:Ownable": {
+        "src": "@openzeppelin/contracts/access/Ownable.sol:20",
+        "inherit": [
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "owner()",
+          "renounceOwnership()",
+          "transferOwnership(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "Ownable",
+            "src": "@openzeppelin/contracts/access/Ownable.sol:28"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      },
+      "@openzeppelin/contracts/utils/Context.sol:Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.2",
+          "flat": false,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      },
+      "scripts/contracts/SlotMachine.sol:SlotMachine": {
+        "src": "scripts/contracts/SlotMachine.sol:6",
+        "version": {
+          "withMetadata": "d75c047b403eae03e8b1d80f3e1c9953479c6918012f4149d42123fd63b74bab",
+          "withoutMetadata": "5301d63847658a47aadb17e12ad9ee9f643d7e6c1d7528b4b7a2123a1e298cc1",
+          "linkedWithoutMetadata": "5301d63847658a47aadb17e12ad9ee9f643d7e6c1d7528b4b7a2123a1e298cc1"
+        },
+        "inherit": [
+          "@openzeppelin/contracts/access/Ownable.sol:Ownable",
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "updatePrice(uint256)",
+          "updatePoints(string,uint256,uint256)",
+          "withdraw(uint256)",
+          "deposit()",
+          "()",
+          "spin()",
+          "userBalance()",
+          "cashOut()"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "SlotMachine",
+            "src": "scripts/contracts/SlotMachine.sol:25"
+          },
+          {
+            "kind": "state-variable-assignment",
+            "name": "symbols",
+            "src": "scripts/contracts/SlotMachine.sol:37"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            },
+            {
+              "label": "price",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_uint256",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:23"
+            },
+            {
+              "label": "symbols",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_array(t_string_storage)dyn_storage",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:37"
+            },
+            {
+              "label": "points",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_string_memory_ptr,t_array(t_uint256)2_storage)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:48"
+            },
+            {
+              "label": "slots",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_address,t_struct(Slot)318_storage)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:56"
+            },
+            {
+              "label": "balances",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:57"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_array(t_string_storage)3_storage": {
+              "label": "string[3]",
+              "numberOfBytes": "96"
+            },
+            "t_array(t_string_storage)dyn_storage": {
+              "label": "string[]",
+              "numberOfBytes": "32"
+            },
+            "t_array(t_uint256)2_storage": {
+              "label": "uint256[2]",
+              "numberOfBytes": "64"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_mapping(t_address,t_struct(Slot)318_storage)": {
+              "label": "mapping(address => struct SlotMachine.Slot)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_string_memory_ptr,t_array(t_uint256)2_storage)": {
+              "label": "mapping(string => uint256[2])",
+              "numberOfBytes": "32"
+            },
+            "t_string_memory_ptr": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_string_storage": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_struct(Slot)318_storage": {
+              "label": "struct SlotMachine.Slot",
+              "members": [
+                {
+                  "label": "redeemed",
+                  "type": "t_bool",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "results",
+                  "type": "t_array(t_string_storage)3_storage",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "prize",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "4"
+                }
+              ],
+              "numberOfBytes": "160"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      }
+    },
+    {
+      "@openzeppelin/contracts/access/Ownable.sol:Ownable": {
+        "src": "@openzeppelin/contracts/access/Ownable.sol:20",
+        "inherit": [
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "owner()",
+          "renounceOwnership()",
+          "transferOwnership(address)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "Ownable",
+            "src": "@openzeppelin/contracts/access/Ownable.sol:28"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      },
+      "@openzeppelin/contracts/utils/Context.sol:Context": {
+        "src": "@openzeppelin/contracts/utils/Context.sol:16",
+        "inherit": [],
+        "libraries": [],
+        "methods": [],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.2",
+          "flat": false,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      },
+      "scripts/contracts/SlotMachine.sol:SlotMachine": {
+        "src": "scripts/contracts/SlotMachine.sol:6",
+        "version": {
+          "withMetadata": "ea1ce0a5a26113339a880d0230fc36443a56abc32de6b8dc438ce552b7547a08",
+          "withoutMetadata": "c0e72e8df1eb5090233fffd74c6a7e4a30528895b10cab22650e3e4b0f556851",
+          "linkedWithoutMetadata": "c0e72e8df1eb5090233fffd74c6a7e4a30528895b10cab22650e3e4b0f556851"
+        },
+        "inherit": [
+          "@openzeppelin/contracts/access/Ownable.sol:Ownable",
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "()",
+          "updatePrice(uint256)",
+          "withdraw(uint256)",
+          "deposit()",
+          "spin()",
+          "user_balance()",
+          "cashOut()"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "SlotMachine",
+            "src": "scripts/contracts/SlotMachine.sol:10"
+          },
+          {
+            "kind": "state-variable-assignment",
+            "name": "symbols",
+            "src": "scripts/contracts/SlotMachine.sol:28"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_owner",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_address",
+              "contract": "Ownable",
+              "src": "@openzeppelin/contracts/access/Ownable.sol:21"
+            },
+            {
+              "label": "price",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_uint256",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:8"
+            },
+            {
+              "label": "symbols",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_array(t_string_storage)dyn_storage",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:28"
+            },
+            {
+              "label": "payouts",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_mapping(t_string_memory_ptr,t_array(t_uint256)3_storage)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:39"
+            },
+            {
+              "label": "slots",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_mapping(t_address,t_struct(Slot)234_storage)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:47"
+            },
+            {
+              "label": "balances",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "SlotMachine",
+              "src": "scripts/contracts/SlotMachine.sol:48"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_array(t_string_storage)3_storage": {
+              "label": "string[3]",
+              "numberOfBytes": "96"
+            },
+            "t_array(t_string_storage)dyn_storage": {
+              "label": "string[]",
+              "numberOfBytes": "32"
+            },
+            "t_array(t_uint256)3_storage": {
+              "label": "uint256[3]",
+              "numberOfBytes": "96"
+            },
+            "t_bool": {
+              "label": "bool",
+              "numberOfBytes": "1"
+            },
+            "t_mapping(t_address,t_struct(Slot)234_storage)": {
+              "label": "mapping(address => struct SlotMachine.Slot)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_string_memory_ptr,t_array(t_uint256)3_storage)": {
+              "label": "mapping(string => uint256[3])",
+              "numberOfBytes": "32"
+            },
+            "t_string_memory_ptr": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_string_storage": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_struct(Slot)234_storage": {
+              "label": "struct SlotMachine.Slot",
+              "members": [
+                {
+                  "label": "redeemed",
+                  "type": "t_bool",
+                  "offset": 0,
+                  "slot": "0"
+                },
+                {
+                  "label": "results",
+                  "type": "t_array(t_string_storage)3_storage",
+                  "offset": 0,
+                  "slot": "1"
+                },
+                {
+                  "label": "prize",
+                  "type": "t_uint256",
+                  "offset": 0,
+                  "slot": "4"
+                }
+              ],
+              "numberOfBytes": "160"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.19"
+      }
+    }
+  ]
+}
