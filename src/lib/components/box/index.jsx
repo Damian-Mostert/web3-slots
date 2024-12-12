@@ -77,11 +77,9 @@ export default function Box({children,title}) {
 
   var width = 2000,height = 1000;
 
-  if(typeof window != "undefined"){
-    const { width:w, height:h } = useWindowSize({ initialHeight: window.innerHeight, initialWidth: window.innerWidth });
-    width = w;
-    height = h;
-  }
+  const { width:w, height:h } = useWindowSize({ initialHeight: typeof window != "undefined"?window.innerHeight:height , initialWidth:typeof window != "undefined"? window.innerWidth:"height" });
+  width = w;
+  height = h;
 
   const [isSpinning, setIsSpinning] = useState(false);
   const [debugText, setDebugText] = useState("LETS GO!!!");
