@@ -107,7 +107,7 @@ function Context({children}){
 		})
 	};
 
-	return <WalletContext.Provider value={{
+	const value ={
 		actions: contractActions(read, write, transact, reset),
 		response: {
 			readError:useReads.error,
@@ -116,8 +116,14 @@ function Context({children}){
 			readData:useReads.data?.[0]?.result,
 			writeData:useWrite.data,
 			transactData:useTransaction.data
-		}
-	}}>
+		},
+		abi,
+		address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+	};
+
+	console.log(value)
+
+	return <WalletContext.Provider value={value}>
 		{children}
 	</WalletContext.Provider>
 }
