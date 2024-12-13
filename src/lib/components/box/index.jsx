@@ -1,85 +1,42 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./styles.module.scss";
-import { useAccount, useDisconnect } from "wagmi";
+import { useAccount, useDisconnect, useWatchContractEvent } from "wagmi";
 import Image from "next/image";
 import Connect from "../connect";
-import useWindowSize from "react-use/lib/useWindowSize";
 import Confetti from "react-confetti";
 import Link from "next/link";
 import useContractActions from "@/hooks/useContractActions";
 
 export default function Box({children,title}) {
-  const { disconnect } = useDisconnect();
-  const { address } = useAccount();
-
-  const [balance,setBalance] = useState(0);
-
-  const [gettingBalance,setGettingBalance] = useState(false);
-
-
-  const {
-    actions,
-    response
-  } = useContractActions();
-  
-  const getBalance = () =>{
-    setGettingBalance(true);
-    actions.userBalance();
-  }
+  const { disconnect ,isSuccess:disconnectSuccess } = useDisconnect();
 
   useEffect(()=>{
-    getBalance();    
-  },[]);
-
-  useEffect(()=>{
-    if(gettingBalance){
-      if(response.readData && !response.readError){
-        setBalance(Number(response.readData));
-        setGettingBalance(false);
-        actions.reset();
-      }else if(response.readError){
-        setGettingBalance(false);  
-      }
+    if(disconnectSuccess){
+      window.location.reload()
     }
-  },[gettingBalance,response.readData])
+  },[disconnectSuccess])
 
+  const { address } = useAccount();
+  
+  const [balance,setBalance] = useState(0);
+  const [gettingBalance,setGettingBalance] = useState(false);
   const [spinData,setSpinData] = useState(0);
   const [gettingSpinData,setGettingSpinData] = useState(false);
 
-  const realSpin= ()=>{
-    setGettingSpinData(true);
-    actions.spin();
-  }
+  const [{ width, height },setWindowDimensions] = useState({width:0,height:0});
 
-  useEffect(()=>{
-    if(gettingSpinData){
-      if(response.writeData && !response.writeError){
-        setSpinData(response.writeData);
-        actions.reset();
-        setGettingSpinData(false);
-      }else if(response.writeError){
-        setGettingSpinData(false);
-        actions.reset();  
-      }
-    }
-  },[gettingSpinData,response.writeData,response.writeError])
-
-  useEffect(()=>{
-    if(spinData){
-      handleGamble({keys:spinData.results})
-      setSpinData(null);
-    }
-  },[spinData])
-
-  useEffect(()=>{
-    console.info("response:",response)
-  },[response])
-
-  var width = 2000,height = 1000;
-
-  const { width:w, height:h } = useWindowSize({ initialHeight: typeof window != "undefined"?window.innerHeight:height , initialWidth:typeof window != "undefined"? window.innerWidth:"height" });
-  width = w;
-  height = h;
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowDimensions({ width: window.innerWidth, height: window.innerHeight });
+    };
+  
+    updateDimensions(); // Set initial dimensions
+    window.addEventListener("resize", updateDimensions);
+  
+    return () => {
+      window.removeEventListener("resize", updateDimensions); // Cleanup on unmount
+    };
+  }, []);
 
   const [isSpinning, setIsSpinning] = useState(false);
   const [debugText, setDebugText] = useState("LETS GO!!!");
@@ -91,15 +48,87 @@ export default function Box({children,title}) {
   const timeoutsRef = useRef([]);
 
   const [busyWithWithdraw,setBusyWithWithdraw] = useState(false);
+  
   const handleWithdraw = () =>{
     setBusyWithWithdraw(true);
     actions.cashOut();
   }
+
+  const {
+    actions,
+    response,
+    abi,
+    address:contractAddress
+  } = useContractActions();
+
+
+  const getBalance = () =>{
+    setGettingBalance(true);
+    actions.userBalance();
+  }
+  useEffect(getBalance,[]);
+
+  useEffect(()=>{
+    if(gettingBalance){
+      if(response.readError){
+        setGettingBalance(false);
+        actions.reset();
+      }else if(response.readData){
+        setBalance(Number(response.readData));
+        setGettingBalance(false);
+        actions.reset();
+      }
+    }
+  },[gettingBalance,response.readData])
+
+  
+
+  const realSpin= ()=>{
+    setGettingSpinData(true);
+    actions.spin();
+  }
+
+  useEffect(()=>{
+    if(gettingSpinData){
+      if(response.writeError){
+        setGettingSpinData(false);
+        actions.reset(); 
+      }else if(response.writeData){
+        setSpinData(response.writeData);
+        setGettingSpinData(false);
+        actions.reset();
+      }
+    }
+  },[gettingSpinData,response.writeData,response.writeError])
+
+  const [gettingSpinResult,setGettingSpinResult] = useState(false)
+
+  useWatchContractEvent({
+		abi,
+		address: contractAddress,
+	  eventName:"SpinResult",
+		onLogs(logs){
+      console.log("spin-result",logs)
+      handleGamble({keys:logs[logs.length-1].args.results},logs[logs.length-1].args.prize)
+      setGettingSpinResult(false);
+      setShowConfetti(false);
+      getBalance()
+		}
+	});
+
+  useEffect(()=>{
+    if(spinData){
+      setSpinData(null);
+      setDebugText("Please wait...");
+      setGettingSpinResult(true);
+    }
+  },[spinData])
+
   useEffect(()=>{
     if(busyWithWithdraw){
       if(response.writeData && !response.writeError){
-        actions.reset();
         setBusyWithWithdraw(false);
+        actions.reset();
       }else if(response.writeError){
         setBusyWithWithdraw(false);
         actions.reset();  
@@ -114,19 +143,11 @@ export default function Box({children,title}) {
 
   const resetMachine = () => {
     if(children)return;
-    indexes.current = [0, 0, 0];
-    reelsRef.current.forEach((reel) => {
-      if (reel) {
-        reel.style.transition = "none";
-        reel.style.backgroundPositionY = "0px";
-      }
-    });
-
-    slotsRef.current?.classList.remove("win1", "win2");
     setDebugText("LETS GO!!!");
     setIsSpinning(false);
     setShowConfetti(false); // Reset confetti
     clearTimeouts();
+    actions.reset();  
   };
 
   const handleGamble = (data = {
@@ -134,18 +155,14 @@ export default function Box({children,title}) {
       "random",
       "random",
       "random",
-    ]
-  }) => {
+    ],
+    
+  },prize) => {
     
     const {keys} = data;
 
     if(children)return;
     if (isSpinning) return;
-
-    if(address){
-      realSpin();
-      return;
-    }
 
     setShowConfetti(false); 
     setIsSpinning(true);
@@ -162,66 +179,97 @@ export default function Box({children,title}) {
       "lemon",
       "melon"
     ];
-
+    
     const iconHeight = 79;
-    const numIcons = 9;
-
-    const rollReel = (reel, offset) => {
-      const index = keys[offset] == "random" ? Math.random() : iconMap.indexOf(keys[offset]);
-
-      const delta = (offset + 2) * numIcons + Math.floor(index * numIcons);
-
+    const numIcons = iconMap.length;
+    
+    const rollReel = (reel, offset, spinCount = 3) => {
+      let index;
+    
+      // Get the current position of the reel (Y-axis position of the background)
+      const currentPosition = parseFloat(getComputedStyle(reel).backgroundPositionY) || 0;
+    
+      // Get the current delta (number of icons the reel is currently at, based on the current position)
+      const currentDelta = Math.floor(currentPosition / iconHeight) % numIcons;
+    
+      // If the key is "random", pick a random index from the iconMap array
+      if (keys[offset] === "random") {
+        index = Math.floor(Math.random() * numIcons);
+      } else {
+        // Otherwise, map the key to the iconMap array
+        index = iconMap.indexOf(keys[offset]);
+      }
+    
+      // Calculate the desired target delta (index you want to land on)
+      const targetDelta = Math.floor(index);
+    
+      // Calculate the difference in delta (how many icons we need to move)
+      const deltaDifference = (targetDelta - currentDelta + numIcons) % numIcons;
+    
+      console.log("Current Delta:", currentDelta, "Target Delta:", targetDelta, "Delta Difference:", deltaDifference);
+    
       return new Promise((resolve) => {
-        const startY = parseFloat(getComputedStyle(reel).backgroundPositionY) || 0;
-        const targetY = startY + delta * iconHeight;
-        const normalizedY = targetY % (numIcons * iconHeight);
+        // Total number of positions to move (full spins + target delta)
+        const totalDelta = spinCount * numIcons + deltaDifference;
+    
+        // Calculate the target Y position based on the total number of steps to move
+        const targetY = currentPosition + totalDelta * iconHeight;
+    
+        // Normalize the targetY to ensure it wraps correctly within the range
+        const normalizedY = targetY % (numIcons * iconHeight); // Keeps the position within the bounds of the reel's height
+    
+        // Apply the transition to animate the reel's movement
         timeoutsRef.current.push(
           setTimeout(() => {
-            reel.style.transition = `background-position-y ${(16 + delta) * 50}ms cubic-bezier(.41,-0.01,.63,1.09)`;
-            reel.style.backgroundPositionY = `${targetY}px`;
+            reel.style.transition = `background-position-y ${(16 + totalDelta) * 50}ms cubic-bezier(.41,-0.01,.63,1.09)`;
+            reel.style.backgroundPositionY = `${targetY}px`; // Move to the new target position
           }, offset * 150)
         );
+    
+        // After the transition ends, reset the position and remove the transition
         timeoutsRef.current.push(
           setTimeout(() => {
-            reel.style.transition = "none";
-            reel.style.backgroundPositionY = `${normalizedY}px`;
-            resolve(delta % numIcons);
-          }, (16 + delta) * 50 + offset * 150)
+            reel.style.transition = "none"; // Remove the transition
+            reel.style.backgroundPositionY = `${normalizedY}px`; // Ensure the position is wrapped and normalized
+            resolve(deltaDifference); // Return the final position (normalized)
+          }, (16 + totalDelta) * 50 + offset * 150)
         );
       });
     };
+    
+    
     const rollAll = async () => {
+      
       const results = await Promise.all(
         reelsRef.current.map((reel, i) => reel && rollReel(reel, i))
       );
+      
       results.forEach((delta, i) => {
         indexes.current[i] = (indexes.current[i] + delta) % numIcons;
       });
-      setDebugText(indexes.current.map((i) => iconMap[i]).join(" | "));
-      const [first, second, third] = indexes.current;
-      if (first === second || second === third) {
-        const winClass = first === third ? "win2" : "win1";
-        slotsRef.current?.classList.add(winClass);
-        setShowConfetti(true); // Show confetti on win
-        timeoutsRef.current.push(
-          setTimeout(() => {
-            slotsRef.current?.classList.remove(winClass);
-          }, 8000)
-        );
-      }
+      
+      setDebugText(keys.filter(i=>i=="random").length == 3 ? indexes.current.map((i) => iconMap[i]).join(" | ") : keys.join(" | "));
 
+      const [first, second, third] = indexes.current;
+      
+      if ((!address && (first === second || second === third )) || prize) {        
+        setShowConfetti(true);
+
+      }
+    
       setIsSpinning(false);
+      
       if (!address) {
         timeoutsRef.current.push(
           setTimeout(() => {
             handleGamble();
           }, 4000)
         );
-        
       }
     };
-
+    
     rollAll();
+    
   };
 
   useEffect(() => {
@@ -236,11 +284,11 @@ export default function Box({children,title}) {
 
 
   const bal =<>
-    {Number(balance).toFixed(14)} {balance?.symbol}
+    {Number(Number(balance) / 10 ** 18).toFixed(14)} {balance?.symbol}
     <Image alt={"ETH"} width={60} height={60} className="w-8 h-8 pl-4" src={"/logos/ethereum.svg"} />
   </>
 
-  const disabled = gettingSpinData||isSpinning||busyWithWithdraw
+  const disabled = gettingSpinData||isSpinning||busyWithWithdraw||gettingSpinResult
 
   
 

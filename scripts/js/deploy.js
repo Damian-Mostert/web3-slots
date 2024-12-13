@@ -1,4 +1,6 @@
 const deployContract = require("../lib/deploy-contract");
+const { ethers } = require("hardhat");
+
 async function main() {
   await deployContract("SlotMachine",[]);
 }

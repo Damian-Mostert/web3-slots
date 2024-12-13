@@ -1,6 +1,7 @@
 import { parseEther } from "viem";
 
 export interface ActionsInterface {
+    lastSpin:()=>void,
     reset:()=>void,
     spin:()=>void,
     userBalance:()=>void,
@@ -10,11 +11,19 @@ export interface ActionsInterface {
         updatePrice:(new_price:number)=>void,
         updatePoints:(symbol:string,twoMatchPayout:number,threeMatchPayout:number)=>void
     },
+    abi?:any,
+    address?:any
 }
 
 const actions = (read: any, write: any, transact:any,reset:()=>void): ActionsInterface => {
     return {
         reset,
+        lastSpin(){
+            return (read({
+                functionName:"lastSpin",
+                args:[]
+            }));
+        },
         userBalance(){
             return Number(read({
                 functionName:"userBalance",
