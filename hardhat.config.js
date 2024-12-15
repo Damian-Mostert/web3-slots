@@ -11,7 +11,7 @@ module.exports = {
     solidity: '0.8.19',
     defaultNetwork: 'sepolia',
     paths: {
-        sources: './scripts/contracts',
+        sources: './src/lib/scripts/contracts',
         artifacts: "./src/lib/data/artifacts",
         cache: "./build/cache" ,
     },

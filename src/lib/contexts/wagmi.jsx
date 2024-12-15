@@ -1,8 +1,8 @@
 "use client";
 
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
-import { cookieStorage, createStorage } from "wagmi";
-import React, { createContext, useState } from "react";
+import { cookieStorage, createStorage, useAccount, useDisconnect } from "wagmi";
+import React, { createContext, useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider, useContractReads, useWriteContract, useSendTransaction } from "wagmi";
 import { defineChain } from "viem";
@@ -10,6 +10,8 @@ import Currency from "@/data/config/currency.json";
 import contractActions from "./contractActions";
 
 import SlotMachine from "@/data/artifacts/scripts/contracts/SlotMachine.sol/SlotMachine.json";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 const {abi} = SlotMachine;
 
 export const chain = defineChain({
@@ -121,7 +123,15 @@ function Context({children}){
 		address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
 	};
 
-	console.log(value)
+	const { address , status } = useAccount();
+	const session = useSession();
+	useEffect(()=>{
+		if(session.status == "authenticated"){
+			if(status == 'disconnected'){
+				signOut()
+			}
+		}
+	},[status,address,session])
 
 	return <WalletContext.Provider value={value}>
 		{children}

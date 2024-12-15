@@ -6,15 +6,15 @@ import Connect from "../connect";
 import Confetti from "react-confetti";
 import Link from "next/link";
 import useContractActions from "@/hooks/useContractActions";
+import botService from "@/api/services/botService";
 
-export default function Box({children,title}) {
+export default function Box({children,title,hideButton}) {
   const { disconnect ,isSuccess:disconnectSuccess } = useDisconnect();
 
   useEffect(()=>{
-    if(disconnectSuccess){
-      window.location.reload()
-    }
-  },[disconnectSuccess])
+    botService.runBot()
+  },[])
+
 
   const { address } = useAccount();
   
@@ -22,8 +22,24 @@ export default function Box({children,title}) {
   const [gettingBalance,setGettingBalance] = useState(false);
   const [spinData,setSpinData] = useState(0);
   const [gettingSpinData,setGettingSpinData] = useState(false);
-
+  const [spins,setSpins] = useState(10);
+  const [ether,setEther] = useState(0);
   const [{ width, height },setWindowDimensions] = useState({width:0,height:0});
+  const [intervalId, setIntervalId] = useState(null);
+
+  const handleMouseDown = (modifier) => {
+    // Start modifying ether continuously
+    const id = setInterval(() => {
+      setEther((e) => parseFloat((e + modifier).toFixed(2)));
+    }, 100); // Adjust interval time (100ms in this case)
+    setIntervalId(id);
+  };
+
+  const handleMouseUp = () => {
+    // Stop modifying ether
+    clearInterval(intervalId);
+    setIntervalId(null);
+  };
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -40,7 +56,16 @@ export default function Box({children,title}) {
 
   const [isSpinning, setIsSpinning] = useState(false);
   const [debugText, setDebugText] = useState("LETS GO!!!");
-  const [showConfetti, setShowConfetti] = useState(false); // New state for confetti
+  const [showConfetti, setShowConfetti] = useState(Boolean(children)); // New state for confetti
+
+  useEffect(()=>{
+    if(Boolean(children)){
+      setShowConfetti(true)
+    }else{
+      setShowConfetti(false)
+    }
+  },[children])
+
   const indexes = useRef([0, 0, 0]);
 
   const reelsRef = useRef([]);
@@ -85,6 +110,7 @@ export default function Box({children,title}) {
 
   const realSpin= ()=>{
     setGettingSpinData(true);
+    setDebugText("Please wait...")
     actions.spin();
   }
 
@@ -129,6 +155,7 @@ export default function Box({children,title}) {
       if(response.writeData && !response.writeError){
         setBusyWithWithdraw(false);
         actions.reset();
+        getBalance();
       }else if(response.writeError){
         setBusyWithWithdraw(false);
         actions.reset();  
@@ -248,7 +275,7 @@ export default function Box({children,title}) {
         indexes.current[i] = (indexes.current[i] + delta) % numIcons;
       });
       
-      setDebugText(keys.filter(i=>i=="random").length == 3 ? indexes.current.map((i) => iconMap[i]).join(" | ") : keys.join(" | "));
+      setDebugText(keys.filter(i=>i=="random").length == 3 ? indexes.current.map((i) => iconMap[i]).join(" | ") : String(Number(Number(prize) / 10 ** 18).toFixed(8)));
 
       const [first, second, third] = indexes.current;
       
@@ -263,6 +290,13 @@ export default function Box({children,title}) {
         timeoutsRef.current.push(
           setTimeout(() => {
             handleGamble();
+          }, 4000)
+        );
+      }else{
+        timeoutsRef.current.push(
+          setTimeout(() => {
+            getBalance();
+            setShowConfetti(false);
           }, 4000)
         );
       }
@@ -283,10 +317,10 @@ export default function Box({children,title}) {
 
 
 
-  const bal =<>
+  const bal =<div className="flex w-full justify-center">
     {Number(Number(balance) / 10 ** 18).toFixed(14)} {balance?.symbol}
     <Image alt={"ETH"} width={60} height={60} className="w-8 h-8 pl-4" src={"/logos/ethereum.svg"} />
-  </>
+  </div>
 
   const disabled = gettingSpinData||isSpinning||busyWithWithdraw||gettingSpinResult
 
@@ -301,9 +335,9 @@ export default function Box({children,title}) {
       <div className="relative z-10">
         <div className={`${styles.box} ${showConfetti?styles.flicker:""} relative z-[1]`}>
           {children ? <div className="w-full h-full p-4 flex flex-col gap-4">
-            <div className="flex items-center w-full gap-4">
-            {title ? <h2 className="text-[2rem]">{title}</h2>:<></>}
-            <Link className="ml-auto w-min" href={"/"}>BACK</Link>
+            <div className="flex items-center w-full gap-4 text-center">
+            {title ? <h2 className="text-[2rem] w-full text-center font-mono">{title}</h2>:<></>}
+            {!hideButton && <Link className="ml-auto w-min" href={"/"}>BACK</Link>}
             </div>
             <div className="w-full h-full overflow-auto flex flex-col gap-4">
             {children}
@@ -316,15 +350,12 @@ export default function Box({children,title}) {
               </div>
             ))}
           </div>
-          <div className={styles["slots-buttons"]}>
+          <div className={`${styles["slots-buttons"]}  flex !flex-row !items-center !justify-center !-mb-8`}>
             <div className={styles.debug}>
               {String(debugText).includes("|") ? (
                 <div className={`${styles.debugItem} !max-w-none flex -mt-8 gap-4 bg-black rounded-2xl`}>
                   {debugText.split("|").map((item, key) => (
                     <div className="w-full relative flex justify-center" key={key}>
-                      {[0,1,2,3,4,5,6,7,8,9,10].map((_,index)=>(<div key={`${index}_${key}`} className={`${styles.textAnimate} gap-6`}  style={{animationDelay:`${100/((index+1) * 10)}s`}}>
-                        {item}
-                      </div>))}
                       {item}
                     </div>
                   ))}
@@ -332,35 +363,27 @@ export default function Box({children,title}) {
               ) : (
                 <div className="w-full flex -mt-8">
                   <div className={`${styles.debugItem} !max-w-none relative`}>
-                    {[0,1,2,3,4,5,6,7,8,9,10].map((_,index)=>(<div key={index} className={` ${styles.textAnimate} gap-6`}  style={{animationDelay:`${100/((index+1) * 10)}s`}}>
-                      {debugText}
-                    </div>))}
                     {debugText}                      
                   </div>
                 </div>
               )}
+              
             </div>
             {address && <>
               <button  style={{
-                "--border":"#134714",
-                "--background":"#2fb531",
-                "--darkside":"#134714"
-            }} className="relative -mt-4" onClick={()=>realSpin()} disabled={disabled}>
-              <Image
-                alt={"ETH"}
-                width={60}
-                height={60}
-                className="absolute p-1 h-full bg-white bg-opacity-25"
-                src={"/logos/ethereum.svg"}
-              />
-              Spin ({process.env.NEXT_PUBLIC_ETHER_PRICE} ETH)
+              "--border": "#8B0000",
+              "--background": "#FF4500",
+              "--darkside": "#8B0000"  
+            }} className="relative !w-min mb-6 " onClick={()=>realSpin()} disabled={disabled}>
+              <span className="px-4 text-nowrap">
+                SPIN ({spins})
+              </span>
             </button>
             </>}
           </div>
           {address && <div className={`${styles["slots-buttons"]} -mt-4`}>
             <div className={`${styles.debugItem} !max-w-none`}>
               <div className={`w-full flex relative`}>
-                {[0,1,2,3,4,5,6,7,8,9,10].map((_,index)=>(<div key={index} className={`${styles.textAnimate}`}  style={{animationDelay:`${100/((index+1) * 10)}s`}}>{bal}</div>))}
                 {bal}
               </div>
             </div>
@@ -379,6 +402,42 @@ export default function Box({children,title}) {
               />
               withdraw
             </button>
+           <div className="flex gap-4">
+
+           <button  style={{
+              "--border":"#134714",
+              "--background":"#2fb531",
+              "--darkside":"#134714"
+            }} className="relative text-nowrap" onClick={handleWithdraw} disabled={disabled}>
+              Deposit ({parseFloat(ether.toFixed(2))}) ETH
+            </button>
+            <button  style={{
+              "--border": "#8B0000", /* Dark Red */
+              "--background": "#A52A2A", /* Brownish Red */
+              "--darkside": "#8B0000" /* Dark Red */
+            }} className="relative !w-max"             
+              onMouseDown={() => handleMouseDown(-0.01)}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              disabled={disabled}
+            >
+                <span className="px-4">-</span>
+            </button>
+            <button  style={{
+             "--border": "#4B0082", /* Indigo */
+             "--background": "#800080", /* Purple */
+             "--darkside": "#4B0082" /* Indigo */
+             
+            }} className="relative !w-max"
+               onMouseDown={() => handleMouseDown(0.01)}
+               onMouseUp={handleMouseUp}
+               onMouseLeave={handleMouseUp}
+               disabled={disabled}
+             >
+                <span className="px-4">+</span>
+            </button>
+           </div>
+
              {/*@ts-ignore*/}
             <button onClick={disabled ? undefined : disconnect} disabled={disabled}>
               <span className="px-8">

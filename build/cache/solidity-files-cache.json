@@ -113,45 +113,6 @@
         "Context"
       ]
     },
-    "/Users/damian/web3-slots-1/scripts/contracts/SlotMachine.sol": {
-      "lastModificationDate": 1734109618107,
-      "contentHash": "7f351a8639bb537499ca66849a5d60a5",
-      "sourceName": "scripts/contracts/SlotMachine.sol",
-      "solcConfig": {
-        "version": "0.8.19",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "storageLayout"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/access/Ownable.sol",
-        "@openzeppelin/contracts/security/ReentrancyGuard.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "SlotMachine"
-      ]
-    },
     "/Users/damian/web3-slots-1/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
       "lastModificationDate": 1734005404230,
       "contentHash": "5a20b2cad87ddb61c7a3a6af21289e28",

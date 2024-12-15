@@ -1,11 +1,11 @@
-const { ethers } = require('ethers');
-const contract = require('../../src/lib/data/artifacts/scripts/contracts/SlotMachine.sol/SlotMachine.json');
-const { parseUnits, formatUnits } = require('viem');
+import { ethers } from'ethers'
+import contract from'@/data/artifacts/scripts/contracts/SlotMachine.sol/SlotMachine.json'
+import { parseUnits, formatUnits } from'viem'
 const { abi } = contract;
-const networkRpc = process.env.NETWORK_RPC; // WebSocket URL for Ethereum node
-const ownerPrivateKey = process.env.OWNER_PRIVATE_KEY;
-const contractAddress = process.env.CONTRACT_ADDRESS;
 
+const networkRpc = process.env.NEXT_PUBLIC_NETWORK_RPC; // WebSocket URL for Ethereum node
+const ownerPrivateKey = process.env.OWNER_PRIVATE_KEY;
+const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
 // Set up the WebSocket provider and signer (wallet)
 const provider = new ethers.WebSocketProvider(networkRpc);
 const wallet = new ethers.Wallet(ownerPrivateKey, provider);
@@ -89,5 +89,6 @@ const listenToSpinRequest = async () => {
   }
 };
 
-// Start listening to the event
+
 listenToSpinRequest();
+
