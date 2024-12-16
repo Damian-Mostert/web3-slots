@@ -3,10 +3,9 @@ $icon_height: 79px;
 $num_icons: 9;
 
 @mixin steel(){
-    background-color: #564c39;
+    background-color: var(--wood);
     background-image: url("https://www.transparenttextures.com/patterns/dark-wood.png");
-    /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */    border-radius: 1rem;
-    border:3px solid rgb(169, 168, 165);
+    border:3px solid var(--bling);
     border-style:outset;
 }
 
@@ -14,6 +13,7 @@ $num_icons: 9;
   @include steel();
   width: 421px;
   height: 661px;
+  border-radius: 1rem;
 }
 
 
@@ -58,7 +58,7 @@ $num_icons: 9;
             position: relative;
             overflow: hidden;
             border-radius: 1rem;
-            border:3px solid rgb(169, 168, 165);
+            border:3px solid var(--bling);
             border-style:outset;
             
 		&::after {
@@ -96,13 +96,13 @@ $num_icons: 9;
         text-align: center;
         &Item{
           @apply w-full uppercase text-center bg-[#F5F3F3] text-black rounded-2xl relative overflow-hidden p-4 text-2xl flex justify-center;
-          border:3px solid rgb(169, 168, 165);
+          border:3px solid var(--bling);
           border-style:outset;
           max-width: calc(calc($icon_width + 2rem) + 6px);
           --stroke:1px rgb(0, 0, 0);
           -webkit-text-stroke: var(--stroke); /* Stroke color and width */
           text-stroke: var(--stroke); /* For other browsers that support text stroke */
-          color:rgb(31, 168, 0);
+          color:var(--bold-color);
 
 
           font-family: monospace;

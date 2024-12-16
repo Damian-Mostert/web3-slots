@@ -8,9 +8,12 @@ import { WagmiProvider, useContractReads, useWriteContract, useSendTransaction }
 import { defineChain } from "viem";
 import Currency from "@/data/config/currency.json";
 import contractActions from "./contractActions";
+import contractData from "./contractData";
 
-import SlotMachine from "@/data/artifacts/scripts/contracts/SlotMachine.sol/SlotMachine.json";
-const {abi} = SlotMachine;
+import Bid from "@/data/artifacts/src/lib/contracts/Bid.sol/Bid.json";
+
+import { useRouter } from "next/navigation";
+const {abi} = Bid;
 
 export const chain = defineChain({
 	id: Number(process.env.NEXT_PUBLIC_NETWORK_ID),
@@ -75,6 +78,7 @@ function Context({children}){
 	const useTransaction = useSendTransaction();
 	const [contracts,setContracts] = useState([]);
 	const useReads = useContractReads({contracts});
+	const router = useRouter();
 
 	const reset = ()=>{
 		useWrite.reset();
@@ -109,6 +113,7 @@ function Context({children}){
 
 	const value ={
 		actions: contractActions(read, write, transact, reset),
+		data: contractData(read),
 		response: {
 			readError:useReads.error,
 			writeError:useWrite.error,
@@ -120,8 +125,6 @@ function Context({children}){
 		abi,
 		address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
 	};
-
-	console.log(value)
 
 	return <WalletContext.Provider value={value}>
 		{children}

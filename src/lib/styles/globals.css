@@ -3,46 +3,43 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --diff:0;
+  --fg:rgb(255, 255, 255);
+  --wood:#564c39;
+  --bling:rgb(169, 168, 165);
+  --bold-color:rgb(31, 168, 0);
+
+
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+.baby-blue{
+    --diff:212;
+    --fg:rgb(255, 255, 255);
+    --wood:#6196e1;
+    --bling:#d6a050;
+    --bold-color:rgb(243, 160, 16);
   }
-}
+
+  .rock-and-roll{
+    --diff:68;
+    --fg:rgb(255, 255, 255);
+    --wood:#e16161;
+    --bling:#d6a050;
+    --bold-color:rgb(145, 255, 76);
+  }
+  .king{
+    --diff:297;
+    --wood:#e1a361;
+    --bling:#ffbb00;
+    --bold-color:rgb(243, 160, 16);
+  }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-
-    background:radial-gradient(hsl(0, 100%, 27%) 4%, hsl(0, 100%, 18%) 9%, hsla(0, 100%, 20%, 0) 9%) 0 0,
-    radial-gradient(hsl(0, 100%, 27%) 4%, hsl(0, 100%, 18%) 8%, hsla(0, 100%, 20%, 0) 10%) 50px 50px,
-    radial-gradient(hsla(0, 100%, 30%, 0.8) 20%, hsla(0, 100%, 20%, 0)) 50px 0,
-    radial-gradient(hsla(0, 100%, 30%, 0.8) 20%, hsla(0, 100%, 20%, 0)) 0 50px,
-    radial-gradient(hsla(0, 100%, 20%, 1) 35%, hsla(0, 100%, 20%, 0) 60%) 50px 0,
-    radial-gradient(hsla(0, 100%, 20%, 1) 35%, hsla(0, 100%, 20%, 0) 60%) 100px 50px,
-    radial-gradient(hsla(0, 100%, 15%, 0.7), hsla(0, 100%, 20%, 0)) 0 0,
-    radial-gradient(hsla(0, 100%, 15%, 0.7), hsla(0, 100%, 20%, 0)) 50px 50px,
-    linear-gradient(45deg, hsla(0, 100%, 20%, 0) 49%, hsla(0, 100%, 0%, 1) 50%, hsla(0, 100%, 20%, 0) 70%) 0 0,
-    linear-gradient(-45deg, hsla(0, 100%, 20%, 0) 49%, hsla(0, 100%, 0%, 1) 50%, hsla(0, 100%, 20%, 0) 70%) 0 0;
-    background-color: #300;
+    color: var(--fg);
+    background:radial-gradient(hsl(var(--diff), 100%, 27%) 4%, hsl(var(--diff), 100%, 18%) 9%, hsla(var(--diff), 100%, 20%, 0) 9%) 0 0,radial-gradient(hsl(var(--diff), 100%, 27%) 4%, hsl(var(--diff), 100%, 18%) 8%, hsla(var(--diff), 100%, 20%, 0) 10%) 50px 50px,radial-gradient(hsla(var(--diff), 100%, 30%, 0.8) 20%, hsla(var(--diff), 100%, 20%, 0)) 50px 0,radial-gradient(hsla(var(--diff), 100%, 30%, 0.8) 20%, hsla(var(--diff), 100%, 20%, 0)) 0 50px,radial-gradient(hsla(var(--diff), 100%, 20%, 1) 35%, hsla(var(--diff), 100%, 20%, 0) 60%) 50px 0,radial-gradient(hsla(var(--diff), 100%, 20%, 1) 35%, hsla(var(--diff), 100%, 20%, 0) 60%) 100px 50px,radial-gradient(hsla(var(--diff), 100%, 15%, 0.7), hsla(var(--diff), 100%, 20%, 0)) 0 0,radial-gradient(hsla(var(--diff), 100%, 15%, 0.7), hsla(var(--diff), 100%, 20%, 0)) 50px 50px,linear-gradient(45deg, hsla(var(--diff), 100%, 20%, 0) 49%, hsla(var(--diff), 100%, 0%, 1) 50%, hsla(var(--diff), 100%, 20%, 0) 70%) 0 0,linear-gradient(-45deg, hsla(var(--diff), 100%, 20%, 0) 49%, hsla(var(--diff), 100%, 0%, 1) 50%, hsla(var(--diff), 100%, 20%, 0) 70%) 0 0;
+    background-color: hsl(var(--diff), 40%, 10%);
     background-size: 100px 100px;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+    transition: all 2s;
 }
 
 
