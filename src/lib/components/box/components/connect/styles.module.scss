@@ -2,14 +2,14 @@
 
 .box{
   .window{
-    border:3px solid rgb(169, 168, 165);
+    border:3px solid var(--bling);
     border-style:outset;
     @apply w-full uppercase text-center bg-[#F5F3F3] text-black rounded-2xl relative overflow-hidden p-4 text-2xl;
 
     --stroke:1px rgb(0, 0, 0);
     -webkit-text-stroke: var(--stroke); /* Stroke color and width */
     text-stroke: var(--stroke); /* For other browsers that support text stroke */
-    color:rgb(31, 168, 0);
+    color:var(--bold-color);
     font-family: monospace;
     font-weight: 900;
     &::after {

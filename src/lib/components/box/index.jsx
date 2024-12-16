@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./styles.module.scss";
-import { useAccount, useDisconnect, useWatchContractEvent } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 import Image from "next/image";
 import Connect from "./components/connect";
 import Confetti from "react-confetti";
@@ -13,7 +13,7 @@ import { signOut, useSession } from "next-auth/react";
 import botService from "@/api/services/botService";
 
 export default function Box({children,title,hideButton}) {
-  const { disconnect,disconnectAsync ,isSuccess:disconnectSuccess } = useDisconnect();
+  const { disconnect,disconnectAsync } = useDisconnect();
 
 
   const router = useRouter();
@@ -307,7 +307,13 @@ export default function Box({children,title,hideButton}) {
     if (address) {
       resetMachine();
     } else {
-      handleGamble();
+      handleGamble({
+        keys:[
+          "seven",
+          "seven",
+          "seven",
+        ]
+      });
     }
     return clearTimeouts;
   }, [address]);
@@ -319,7 +325,7 @@ export default function Box({children,title,hideButton}) {
     <Image alt={"ETH"} width={60} height={60} className="w-8 h-8 pl-4" src={"/logos/ethereum.svg"} />
   </div>
 
-  const disabled = isSpinning||busyWithWithdraw||buyingSpins
+  const disabled = isSpinning||busyWithWithdraw||buyingSpins||gettingBalance
 
   
 
@@ -441,7 +447,7 @@ export default function Box({children,title,hideButton}) {
               "--background": "#FF4500",
               "--darkside": "#8B0000"  
             }} className="!w-min" disabled={spinsToBuy <= 0} onClick={()=>setSpinsToBuy(s=>s-1)}><span className="px-4" >-</span></button>
-            <button onClick={buySpins} className="w-full">Buy</button>
+            <button onClick={spinsToBuy > 0 ?buySpins:undefined} disabled={spinsToBuy <= 0} className="w-full">Buy</button>
             <button style={{
                 "--border":"#2c3166",
                 "--background":"#5761c9",
@@ -451,7 +457,6 @@ export default function Box({children,title,hideButton}) {
             <button onClick={async()=>{
               await disconnectAsync()
               await signOut({redirect:false});
-              window.location.reload();
             }}>
               <span className="px-8">
                 Disconnect {address?.slice(0, 5)}...{address?.slice(address?.length - 5, address.length)}
