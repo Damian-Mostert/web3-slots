@@ -2,44 +2,53 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./styles.module.scss";
 import { useAccount, useDisconnect, useWatchContractEvent } from "wagmi";
 import Image from "next/image";
-import Connect from "../connect";
+import Connect from "./components/connect";
 import Confetti from "react-confetti";
 import Link from "next/link";
 import useContractActions from "@/hooks/useContractActions";
+import { useRouter } from "next/navigation";
+import { parseEther, parseUnits } from "viem";
+import spinService from "@/api/services/spinService";
+import { signOut, useSession } from "next-auth/react";
 import botService from "@/api/services/botService";
 
 export default function Box({children,title,hideButton}) {
-  const { disconnect ,isSuccess:disconnectSuccess } = useDisconnect();
+  const { disconnect,disconnectAsync ,isSuccess:disconnectSuccess } = useDisconnect();
+
+
+  const router = useRouter();
 
   useEffect(()=>{
-    botService.runBot()
-  },[])
+    botService.runBot();
+  },[router])
 
+  useEffect(()=>{
+    resetMachine()
+  },[router])
 
   const { address } = useAccount();
-  
+  const [showBuySpins,setShowBuySpins] = useState(false);
   const [balance,setBalance] = useState(0);
   const [gettingBalance,setGettingBalance] = useState(false);
-  const [spinData,setSpinData] = useState(0);
-  const [gettingSpinData,setGettingSpinData] = useState(false);
-  const [spins,setSpins] = useState(10);
-  const [ether,setEther] = useState(0);
+  const [spins,setSpins] = useState("xx");
   const [{ width, height },setWindowDimensions] = useState({width:0,height:0});
-  const [intervalId, setIntervalId] = useState(null);
-
-  const handleMouseDown = (modifier) => {
-    // Start modifying ether continuously
-    const id = setInterval(() => {
-      setEther((e) => parseFloat((e + modifier).toFixed(2)));
-    }, 100); // Adjust interval time (100ms in this case)
-    setIntervalId(id);
-  };
-
-  const handleMouseUp = () => {
-    // Stop modifying ether
-    clearInterval(intervalId);
-    setIntervalId(null);
-  };
+  const [spinsToBuy,setSpinsToBuy] = useState(0);
+  const session = useSession();
+  useEffect(()=>{
+    if(spins == 0 && address){
+      if(!showBuySpins)setShowBuySpins(true);
+    }else{
+      if(showBuySpins)setShowBuySpins(false)
+    }
+  },[spins,showBuySpins,address]);
+  const loadSpins = ()=>spinService.getInfo().then(({data:response})=>{
+    setSpins(response.data.spins ? response.data.spins : 0)
+  })
+  useEffect(()=>{
+    if(address && session.status == "authenticated"){
+      loadSpins()
+    }
+  },[address,session])
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -76,79 +85,50 @@ export default function Box({children,title,hideButton}) {
   
   const handleWithdraw = () =>{
     setBusyWithWithdraw(true);
-    actions.cashOut();
+    actions.redeem();
   }
 
   const {
     actions,
     response,
-    abi,
-    address:contractAddress
   } = useContractActions();
-
 
   const getBalance = () =>{
     setGettingBalance(true);
-    actions.userBalance();
+    spinService.getInfo().then(({data:response})=>{
+      console.log(response)
+      setBalance(response.data.balance ? response.data.balance * (10 ** 18) : 0)
+      setGettingBalance(false);
+    })
   }
-  useEffect(getBalance,[]);
 
-  useEffect(()=>{
-    if(gettingBalance){
-      if(response.readError){
-        setGettingBalance(false);
-        actions.reset();
-      }else if(response.readData){
-        setBalance(Number(response.readData));
-        setGettingBalance(false);
-        actions.reset();
-      }
-    }
-  },[gettingBalance,response.readData])
 
+  useEffect(getBalance,[])
   
 
-  const realSpin= ()=>{
-    setGettingSpinData(true);
-    setDebugText("Please wait...")
-    actions.spin();
+  const realSpin= async ()=>{
+    setIsSpinning(true);
+    setDebugText("Busy...");
+    
+    const {data:result} = await spinService.handleSpin();
+
+    if(result.success){
+      console.log(result)
+      var prize = Number(parseEther(String(result.data.prize ? result.data.prize:0)));
+  
+      handleGamble({
+        keys:result.data.results,
+      },prize);
+      
+      timeoutsRef.current.push(setTimeout(()=>{
+        setBalance(b=>b+=prize)
+      },3000))
+    }else{
+      setIsSpinning(false);
+      setDebugText(result.message)
+    }
   }
 
-  useEffect(()=>{
-    if(gettingSpinData){
-      if(response.writeError){
-        setGettingSpinData(false);
-        actions.reset(); 
-      }else if(response.writeData){
-        setSpinData(response.writeData);
-        setGettingSpinData(false);
-        actions.reset();
-      }
-    }
-  },[gettingSpinData,response.writeData,response.writeError])
-
-  const [gettingSpinResult,setGettingSpinResult] = useState(false)
-
-  useWatchContractEvent({
-		abi,
-		address: contractAddress,
-	  eventName:"SpinResult",
-		onLogs(logs){
-      console.log("spin-result",logs)
-      handleGamble({keys:logs[logs.length-1].args.results},logs[logs.length-1].args.prize)
-      setGettingSpinResult(false);
-      setShowConfetti(false);
-      getBalance()
-		}
-	});
-
-  useEffect(()=>{
-    if(spinData){
-      setSpinData(null);
-      setDebugText("Please wait...");
-      setGettingSpinResult(true);
-    }
-  },[spinData])
 
   useEffect(()=>{
     if(busyWithWithdraw){
@@ -174,8 +154,31 @@ export default function Box({children,title,hideButton}) {
     setIsSpinning(false);
     setShowConfetti(false); // Reset confetti
     clearTimeouts();
+    setShowBuySpins(false);
+    setSpinsToBuy(0);
     actions.reset();  
   };
+
+  const [buyingSpins,setBuyingSpins] = useState(false);
+  const buySpins = ()=>{
+    actions.purchase(spinsToBuy);
+    setBuyingSpins(true)
+  }
+
+  useEffect(()=>{
+    if(buyingSpins){
+      if(response.writeData && !response.writeError){
+        setSpins(spinsToBuy);
+        setBuyingSpins(false);
+        actions.reset();
+        getBalance();
+      }else if(response.writeError){
+        setBuyingSpins(false);
+        actions.reset();  
+      }
+    }
+  },[buyingSpins,response.writeData,response.writeError])
+
 
   const handleGamble = (data = {
     keys : [
@@ -259,6 +262,7 @@ export default function Box({children,title,hideButton}) {
             reel.style.transition = "none"; // Remove the transition
             reel.style.backgroundPositionY = `${normalizedY}px`; // Ensure the position is wrapped and normalized
             resolve(deltaDifference); // Return the final position (normalized)
+            loadSpins()
           }, (16 + totalDelta) * 50 + offset * 150)
         );
       });
@@ -286,17 +290,10 @@ export default function Box({children,title,hideButton}) {
     
       setIsSpinning(false);
       
-      if (!address) {
+      if ((!address) || spins == 0) {
         timeoutsRef.current.push(
           setTimeout(() => {
             handleGamble();
-          }, 4000)
-        );
-      }else{
-        timeoutsRef.current.push(
-          setTimeout(() => {
-            getBalance();
-            setShowConfetti(false);
           }, 4000)
         );
       }
@@ -322,7 +319,7 @@ export default function Box({children,title,hideButton}) {
     <Image alt={"ETH"} width={60} height={60} className="w-8 h-8 pl-4" src={"/logos/ethereum.svg"} />
   </div>
 
-  const disabled = gettingSpinData||isSpinning||busyWithWithdraw||gettingSpinResult
+  const disabled = isSpinning||busyWithWithdraw||buyingSpins
 
   
 
@@ -330,7 +327,7 @@ export default function Box({children,title,hideButton}) {
     <>
     <div className={styles.container}>
       <div className="fixed top-0 left-0 w-screen h-screen overflow-hidden">
-        <Confetti style={{opacity:showConfetti ? "1" : "0",transition:"opacity 1s"}} width={width} height={height} />
+        <Confetti className="bg-opacity-55 bg-black" style={{opacity:showConfetti ? "1" : "0",transition:"opacity 1s"}} width={width} height={height} />
       </div>
       <div className="relative z-10">
         <div className={`${styles.box} ${showConfetti?styles.flicker:""} relative z-[1]`}>
@@ -342,7 +339,7 @@ export default function Box({children,title,hideButton}) {
             <div className="w-full h-full overflow-auto flex flex-col gap-4">
             {children}
             </div>
-          </div> : <>
+          </div> : <div className=" flex flex-col h-full gap-4">
           <div className={styles.slots} ref={(el) => (slotsRef.current = el)}>
             {[0, 1, 2].map((_, i) => (
               <div key={i} className={styles.reelContainer}>
@@ -350,6 +347,7 @@ export default function Box({children,title,hideButton}) {
               </div>
             ))}
           </div>
+          {!showBuySpins && <>
           <div className={`${styles["slots-buttons"]}  flex !flex-row !items-center !justify-center !-mb-8`}>
             <div className={styles.debug}>
               {String(debugText).includes("|") ? (
@@ -381,79 +379,100 @@ export default function Box({children,title,hideButton}) {
             </button>
             </>}
           </div>
-          {address && <div className={`${styles["slots-buttons"]} -mt-4`}>
+          </>}
+          
+          {!showBuySpins ? <>          
+          {address  && <div className={`${styles["slots-buttons"]} `}>
             <div className={`${styles.debugItem} !max-w-none`}>
               <div className={`w-full flex relative`}>
                 {bal}
               </div>
             </div>
-            <button  style={{
+            <div className="w-full flex gap-4">
+            {/* <button style={{
                 "--border":"#2c3166",
                 "--background":"#5761c9",
                 "--darkside":"#2c3166"
-            }} className="relative" onClick={handleWithdraw} disabled={disabled}>
-              <Image
-                alt={"ETH"}
-                width={60}
-                height={60}
-                className="absolute p-1 h-full bg-white bg-opacity-25"
-                src={"/logos/ethereum.svg"}
-                
-              />
-              withdraw
-            </button>
-           <div className="flex gap-4">
-
-           <button  style={{
-              "--border":"#134714",
-              "--background":"#2fb531",
-              "--darkside":"#134714"
-            }} className="relative text-nowrap" onClick={handleWithdraw} disabled={disabled}>
-              Deposit ({parseFloat(ether.toFixed(2))}) ETH
-            </button>
-            <button  style={{
-              "--border": "#8B0000", /* Dark Red */
-              "--background": "#A52A2A", /* Brownish Red */
-              "--darkside": "#8B0000" /* Dark Red */
-            }} className="relative !w-max"             
-              onMouseDown={() => handleMouseDown(-0.01)}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
-              disabled={disabled}
-            >
-                <span className="px-4">-</span>
-            </button>
-            <button  style={{
-             "--border": "#4B0082", /* Indigo */
-             "--background": "#800080", /* Purple */
-             "--darkside": "#4B0082" /* Indigo */
-             
-            }} className="relative !w-max"
-               onMouseDown={() => handleMouseDown(0.01)}
-               onMouseUp={handleMouseUp}
-               onMouseLeave={handleMouseUp}
-               disabled={disabled}
-             >
-                <span className="px-4">+</span>
-            </button>
-           </div>
-
+            }} className="relative" onClick={()=>setShowBuySpins(true)} disabled={disabled}>
+              Buy
+            </button> */}
+            </div>
              {/*@ts-ignore*/}
-            <button onClick={disabled ? undefined : disconnect} disabled={disabled}>
+            <button onClick={disabled ? undefined : ()=>{
+               disconnect();
+               signOut();
+            }} disabled={disabled}>
               <span className="px-8">
                 Disconnect {address.slice(0, 5)}...{address.slice(address.length - 5, address.length)}
               </span>
             </button>
           </div>}
-          {!address && <Connect />}
-          <div className="w-full flex gap-4 px-4 pb-4 justify-end">
+          </>:<>
+          <div className={`${styles["slots-buttons"]} -mt-4`}>
+          <button style={{
+                "--border":"#2c3166",
+                "--background":"#5761c9",
+                "--darkside":"#2c3166"
+            }} className="relative" onClick={handleWithdraw} disabled={disabled||(Number(balance) == 0)}>
+              {Number(balance) > 0 ? <>
+               claim {Number(balance / (10 **18)).toFixed(8)} ETH prize !
+              </>:<>
+                claimed
+              </>}
+            </button>
+            <div className={`${styles.debugItem} !max-w-none mb-4`}>
+              <div className={`w-full flex relative justify-center`}>
+                {spinsToBuy  > 0? <>
+                {spinsToBuy} Spins
+                </>:<>
+                OUT OF SPINS :(
+                </>}
+              </div>
+            </div>
+            
+           <div className={`${styles.debugItem} !max-w-none`}>
+              <div className={`w-full flex relative`}>
+                {(spinsToBuy * Number(process.env.NEXT_PUBLIC_ETHER_PRICE)).toFixed(14)} ETH
+              </div>
+            </div>
+            <div className="flex w-full gap-4">
+            <button style={{
+              "--border": "#8B0000",
+              "--background": "#FF4500",
+              "--darkside": "#8B0000"  
+            }} className="!w-min" disabled={spinsToBuy <= 0} onClick={()=>setSpinsToBuy(s=>s-1)}><span className="px-4" >-</span></button>
+            <button onClick={buySpins} className="w-full">Buy</button>
+            <button style={{
+                "--border":"#2c3166",
+                "--background":"#5761c9",
+                "--darkside":"#2c3166"
+            }} className="!w-min"  onClick={()=>setSpinsToBuy(s=>s+1)}><span className="px-4" >+</span></button>
+            </div>
+            <button onClick={async()=>{
+              await disconnectAsync()
+              await signOut({redirect:false});
+              window.location.reload();
+            }}>
+              <span className="px-8">
+                Disconnect {address?.slice(0, 5)}...{address?.slice(address?.length - 5, address.length)}
+              </span>
+            </button>
+          </div>
+          </>}
+          
+            <Connect hide={Boolean(address) }/>
+         
+          </div>}
+        </div>
+        { <>
+            <div className="w-full flex gap-4 px-4 pb-4 pt-8 justify-end mt-auto">
           <Link href={"/rules"} className="bold mr-auto">Rules</Link>
             <Link href={"/policy"} className="bold">Privacy Policy</Link>
             <Link href={"/terms"} className="bold">Terms and conditions</Link>
           </div>
           </>}
-        </div>
       </div>
+      
     </div>
     </>
   );

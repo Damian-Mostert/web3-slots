@@ -5,10 +5,9 @@ import providers from "./providers";
 const authOptions: AuthOptions = {
 
     providers,
-    /* pages:{
-      signIn:"/",
-      signOut:"/",
-    }, */
+    pages:{
+      signIn:"/sign-in",
+    },
     callbacks: {
       async session({ session, token }:any) {
         session.user.id = token.sub;

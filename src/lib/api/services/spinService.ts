@@ -3,7 +3,7 @@ import { SPIN_SERVICE } from '../config/endpoints';
 
 interface SpinService {
     handleSpin: () => Promise<any>;
-    getSpins: () => Promise<any>
+    getInfo: () => Promise<any>
 }
 
 const spinService: SpinService = {
@@ -11,8 +11,8 @@ const spinService: SpinService = {
         const resp = await api.post(SPIN_SERVICE.HANDLE_SPIN);
         return resp;
     },
-    getSpins: async() =>{
-        const resp = await api.post(SPIN_SERVICE.GET_SPINS);
+    getInfo: async() =>{
+        const resp = await api.get(SPIN_SERVICE.GET_INFO);
         return resp;
     }
 };

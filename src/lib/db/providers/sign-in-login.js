@@ -1,7 +1,15 @@
 import bcrypt from "bcrypt";
 import Address from "../models/address";
+import verifyCaptcha from "./verify-recaptcha";
 
-export default async function signInLogin({ address, password }) {
+export default async function signInLogin({ address, password, captcha_value }) {
+    if(!(await verifyCaptcha(captcha_value))){
+        return {
+            success: false,
+            message: "Recaptcha validation failed",
+        };
+    }
+
     try {
         // Ensure address and password are provided
         if (!address || !password) {
@@ -12,14 +20,14 @@ export default async function signInLogin({ address, password }) {
         }
 
         // Check if address record exists
-        const addressRecord = await Address.findOne({ address });
+        const addressRecord = await Address.findOne({ value:address });
 
         // If no record exists, create a new account
         if (!addressRecord) {
-            const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+            const hashedPassword = await bcrypt.hash(password,10);
             await Address.create({
                 value:address,
-                password: hashedPassword,
+                password:hashedPassword
             });
             return {
                 success: true,

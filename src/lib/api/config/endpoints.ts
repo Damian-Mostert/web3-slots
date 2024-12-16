@@ -1,6 +1,6 @@
 const SPIN_SERVICE = {
-    HANDLE_SPIN:"handle-spin",
-    GET_SPINS:"get-spins",    
+    HANDLE_SPIN:"spin/handle-spin",
+    GET_INFO:"spin/get-info",    
 };
 
 const RULE_SERVICE = {

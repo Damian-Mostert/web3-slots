@@ -1,9 +1,7 @@
-"use client";
+"use server";
 
-import Box from "@/components/box";
-
-export default function Home() {
-  return (<Box/>)
+export default async function Home() {
+  return undefined
 }
 
 

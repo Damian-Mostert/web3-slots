@@ -2,7 +2,7 @@ import axios from 'axios';
 
 
 export const axiosDefault = axios.create({
-    baseURL: "/api/v1",
+    baseURL: process.env.NEXT_PUBLIC_APP_URL+"/api/v1",
 });
 
 

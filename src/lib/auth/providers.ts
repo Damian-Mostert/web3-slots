@@ -1,24 +1,19 @@
 import Init from "@/db/init"
 import signInLogin from "@/db/providers/sign-in-login";
 import CredentialsProvider from "next-auth/providers/credentials"
-import GoogleProvider from "next-auth/providers/google";
-
 
 Init();
 
 const providers = [
-	GoogleProvider({
-		clientId: process.env.GOOGLE_CLIENT_ID!,
-	    clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-	}),
 	CredentialsProvider({
 		name: 'contract-chain-address',
 		credentials: {
-			address: { type:"text"},
-			password: { type: "password"},
+			"2fa-key": {type:"text"},
+			address: { type:"address",label:"Address"},
+			password: { type: "password",label:"Password"},
 		},
-		async authorize({address,password}:any) {
-			const {success,message} = await signInLogin({address,password})
+		async authorize({address,password,"2fa-key":captcha_value}:any) {
+			const {success,message} = await signInLogin({address,password,captcha_value})
 			console.log("message:",message)
 			if (success) {
 				return {

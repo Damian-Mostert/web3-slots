@@ -1,21 +1,28 @@
-import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-const secret = process.env.NEXTAUTH_SECRET;
+import { NextResponse } from "next/server";
+
 export async function middleware(req) {
   const {pathname} = new URL(req.url);
-  const token = await getToken({ req, secret });
+  const token = await getToken({req});
 
-  console.log(pathname)
+  console.log(token,pathname);
 
-  if(!token)
+  if(!token?.id){    
     switch(pathname){
-        case "/":
-          return NextResponse.redirect(new URL("/sign-in",req.url));
+        case "/api/spin/get-info":
+        case "/api/spin/handle-spin":
+        case "/api/spin/update-rules":
+        case "/api/spin/withdraw":
+        case "/buy-spins":
+        return NextResponse.json({
+            error:"Unauthenticated"
+          });
         default:
           return NextResponse.next();
     }
-    return NextResponse.next();
+  }
 }
+
 export const config = {
-  matcher: ["/"],
+  matcher: ["/","/:path"],
 };

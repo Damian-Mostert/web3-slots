@@ -1,18 +1,19 @@
 "use client";
 
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
-import { cookieStorage, createStorage, useAccount, useDisconnect } from "wagmi";
-import React, { createContext, useEffect, useState } from "react";
+import { cookieStorage, createStorage } from "wagmi";
+import React, { createContext, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider, useContractReads, useWriteContract, useSendTransaction } from "wagmi";
 import { defineChain } from "viem";
 import Currency from "@/data/config/currency.json";
 import contractActions from "./contractActions";
+import contractData from "./contractData";
 
-import SlotMachine from "@/data/artifacts/scripts/contracts/SlotMachine.sol/SlotMachine.json";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
-const {abi} = SlotMachine;
+import Bid from "@/data/artifacts/src/lib/contracts/Bid.sol/Bid.json";
+
+import { useRouter } from "next/navigation";
+const {abi} = Bid;
 
 export const chain = defineChain({
 	id: Number(process.env.NEXT_PUBLIC_NETWORK_ID),
@@ -77,6 +78,7 @@ function Context({children}){
 	const useTransaction = useSendTransaction();
 	const [contracts,setContracts] = useState([]);
 	const useReads = useContractReads({contracts});
+	const router = useRouter();
 
 	const reset = ()=>{
 		useWrite.reset();
@@ -111,6 +113,7 @@ function Context({children}){
 
 	const value ={
 		actions: contractActions(read, write, transact, reset),
+		data: contractData(read),
 		response: {
 			readError:useReads.error,
 			writeError:useWrite.error,
@@ -122,16 +125,6 @@ function Context({children}){
 		abi,
 		address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
 	};
-
-	const { address , status } = useAccount();
-	const session = useSession();
-	useEffect(()=>{
-		if(session.status == "authenticated"){
-			if(status == 'disconnected'){
-				signOut()
-			}
-		}
-	},[status,address,session])
 
 	return <WalletContext.Provider value={value}>
 		{children}

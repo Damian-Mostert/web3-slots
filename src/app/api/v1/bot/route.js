@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import "@/db/providers/bot";
-
+import listen from "@/db/providers/bot";
+listen()
 export function GET(){
     return NextResponse.json({})
   }

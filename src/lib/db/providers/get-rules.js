@@ -1,5 +1,4 @@
+import config from "../models/config"
 export default async function getRules(){
-    return {
-        
-    }
+    return await config.findOne({});
 }
