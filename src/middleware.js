@@ -12,9 +12,12 @@ export async function middleware(req) {
         case "/api/spin/update-rules":
         case "/api/spin/withdraw":
         case "/buy-spins":
+        case "/admin":
           return NextResponse.json({
             error:"Unauthenticated"
           });
+        case "/":
+          return NextResponse.redirect("/sign-up");
         default:
           return NextResponse.next();
     }
@@ -36,5 +39,5 @@ export async function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/","/admin","/:path"],
+  matcher: ["/","/:path"],
 };
