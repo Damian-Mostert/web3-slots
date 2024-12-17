@@ -25,7 +25,6 @@ export async function middleware(req) {
     switch(pathname){
       case "/admin":
       case "/api/spin/update-rules":
-        console.log(token.email,owner)
         if(token.email !== owner){
           return NextResponse.json({
             error:"Unauthenticated"
