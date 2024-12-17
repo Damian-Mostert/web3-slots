@@ -7,11 +7,9 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 contract Bid is Ownable, ReentrancyGuard {
 
     uint public price;
-    uint public fee;
 
     constructor() {
         price = 0.001 ether;
-        fee = 0.01 ether;
     }
     
     mapping(address=>uint) prizes;
@@ -19,9 +17,6 @@ contract Bid is Ownable, ReentrancyGuard {
     event PURCHASE(address sender,uint value);
     event REDEEM(address sender,uint value);
     //ADMIN
-    function setFee(address winner,uint value) external onlyOwner(){
-        prizes[winner] = value;
-    }
     function setPrize(address winner,uint value) external onlyOwner(){
         prizes[winner] = value;
     }

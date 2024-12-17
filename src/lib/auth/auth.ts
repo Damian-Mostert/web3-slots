@@ -8,6 +8,7 @@ const authOptions: AuthOptions = {
     pages:{
       signIn:"/sign-in",
     },
+    secret:process.env.AUTH_SECRET,
     callbacks: {
       async session({ session, token }:any) {
         session.user.id = token.sub;

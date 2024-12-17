@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-
+import Init from "../init";
+Init()
 // Define the schema
 const configSchema = new mongoose.Schema({
     prizes:{
@@ -15,4 +16,4 @@ const configSchema = new mongoose.Schema({
     }
 });
 
-export default mongoose.models.Config || mongoose.model("Config", configSchema);
+export default mongoose?.models?.Config || mongoose.model("Config", configSchema);
