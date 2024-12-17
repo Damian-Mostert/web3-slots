@@ -17,7 +17,7 @@ contract Bid is Ownable, ReentrancyGuard {
     event PURCHASE(address sender,uint value);
     event REDEEM(address sender,uint value);
     //ADMIN
-    function setPrize(address winner,uint value) external onlyOwner(){
+    function setPrize(address winner,uint value) external onlyOwner{
         prizes[winner] = value;
     }
     function updatePrice(uint new_price) external onlyOwner {
