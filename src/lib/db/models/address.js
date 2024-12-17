@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import Init from "../init";
+Init()
 
 // Define the schema
 const addressSchema = new mongoose.Schema({
@@ -25,4 +27,4 @@ const addressSchema = new mongoose.Schema({
 
 
 // Export the model
-export default mongoose.models.Address || mongoose.model("Address", addressSchema);
+export default mongoose?.models?.Address || mongoose.model("Address", addressSchema);
