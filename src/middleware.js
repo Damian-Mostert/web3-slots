@@ -9,8 +9,8 @@ export async function middleware(req) {
     switch(pathname){
         case "/api/spin/get-info":
         case "/api/spin/handle-spin":
-        case "/api/spin/update-rules":
         case "/api/spin/withdraw":
+        case "/api/spin/update-rules":
         case "/buy-spins":
         case "/admin":
           return NextResponse.json({
@@ -24,6 +24,7 @@ export async function middleware(req) {
   }else{
     switch(pathname){
       case "/admin":
+      case "/api/spin/update-rules":
         console.log(token.email,owner)
         if(token.email !== owner){
           return NextResponse.json({
