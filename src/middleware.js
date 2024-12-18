@@ -16,8 +16,6 @@ export async function middleware(req) {
           return NextResponse.json({
             error:"Unauthenticated"
           });
-        case "/":
-          return NextResponse.redirect("/sign-up");
         default:
           return NextResponse.next();
     }
